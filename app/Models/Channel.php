@@ -15,4 +15,10 @@ class Channel extends Model
         'description',
         'channel_image',
     ];
+    
+    public function videos()
+    {
+        return $this->hasMany(Video::class);
+    }
 }
+

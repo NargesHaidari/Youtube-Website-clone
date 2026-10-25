@@ -471,7 +471,7 @@
 
 
                 <form
-                    action=""
+                    action="{{ route('video.store') }}"
                     method="POST"
                     enctype="multipart/form-data"
                     class="upload-form"

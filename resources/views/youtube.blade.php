@@ -24,9 +24,7 @@
 
         header {
             height: 64px;
-
             background-color: #ffffff;
-
             border-bottom: 1px solid #e5e5e5;
 
             display: flex;
@@ -46,7 +44,6 @@
             align-items: center;
 
             text-decoration: none;
-
             color: #0f0f0f;
 
             font-size: 21px;
@@ -83,7 +80,7 @@
             margin-left: 2px;
         }
 
-        /* Search */
+        /* ================= SEARCH ================= */
 
         .search-container {
             flex: 1;
@@ -101,7 +98,6 @@
             height: 40px;
 
             border: 1px solid #c6c6c6;
-
             border-right: none;
 
             border-radius: 20px 0 0 20px;
@@ -119,7 +115,6 @@
 
         .search-btn {
             width: 65px;
-
             height: 40px;
 
             border: 1px solid #c6c6c6;
@@ -137,7 +132,7 @@
             background-color: #eeeeee;
         }
 
-        /* Header Right */
+        /* ================= HEADER RIGHT ================= */
 
         .header-right {
             width: 220px;
@@ -145,7 +140,6 @@
             display: flex;
 
             justify-content: flex-end;
-
             align-items: center;
 
             gap: 20px;
@@ -153,7 +147,6 @@
 
         .header-btn {
             border: none;
-
             background: none;
 
             font-size: 21px;
@@ -167,22 +160,29 @@
             display: flex;
             align-items: center;
             justify-content: center;
+
             text-decoration: none;
         }
 
         .profile {
             width: 38px;
             height: 38px;
+
             border-radius: 50%;
+
             overflow: hidden;
+
             cursor: pointer;
+
             transition: transform 0.2s ease;
         }
 
         .profile img {
             width: 100%;
             height: 100%;
+
             display: block;
+
             object-fit: cover;
         }
 
@@ -190,13 +190,11 @@
             transform: scale(1.08);
         }
 
-
         /* ================= MAIN LAYOUT ================= */
 
         .layout {
             display: flex;
         }
-
 
         /* ================= SIDEBAR ================= */
 
@@ -251,7 +249,6 @@
             font-size: 19px;
         }
 
-
         /* ================= CONTENT ================= */
 
         .content {
@@ -262,8 +259,7 @@
             padding: 25px;
         }
 
-
-        /* Categories */
+        /* ================= CATEGORIES ================= */
 
         .categories {
             display: flex;
@@ -273,6 +269,17 @@
             overflow-x: auto;
 
             margin-bottom: 25px;
+
+            padding-bottom: 3px;
+        }
+
+        .categories::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .categories::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 10px;
         }
 
         .category {
@@ -301,7 +308,6 @@
             color: white;
         }
 
-
         /* ================= VIDEOS ================= */
 
         .video-grid {
@@ -310,64 +316,77 @@
             grid-template-columns:
                 repeat(auto-fill, minmax(280px, 1fr));
 
-            gap: 28px 18px;
+            gap: 32px 18px;
         }
 
         .video-card {
             cursor: pointer;
+
+            min-width: 0;
         }
+
+        /* Video thumbnail */
 
         .thumbnail {
             width: 100%;
 
             aspect-ratio: 16 / 9;
 
-            background: linear-gradient(
-                135deg,
-                #ddd,
-                #aaa
-            );
+            background-color: #000;
 
             border-radius: 10px;
 
-            display: flex;
-
-            justify-content: center;
-            align-items: center;
-
-            font-size: 42px;
-
-            color: #ffffff;
-
             overflow: hidden;
+
+            position: relative;
+
+            transition: border-radius 0.2s ease;
         }
+
+        .video-card:hover .thumbnail {
+            border-radius: 6px;
+        }
+
+        .thumbnail video {
+            width: 100%;
+            height: 100%;
+
+            display: block;
+
+            object-fit: cover;
+
+            background-color: #000;
+        }
+
+        /* ================= VIDEO INFO ================= */
 
         .video-info {
             display: flex;
 
             gap: 12px;
 
-            margin-top: 10px;
+            margin-top: 11px;
         }
 
+        /* Channel Avatar */
+
         .channel-avatar {
-            width: 36px;
-            height: 36px;
-
-            min-width: 36px;
-
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
 
-            background-color: #ff0000;
+        .channel-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
 
-            color: white;
-
-            display: flex;
-
-            align-items: center;
-            justify-content: center;
-
-            font-weight: bold;
+        .video-details {
+            min-width: 0;
         }
 
         .video-details h3 {
@@ -378,6 +397,14 @@
             margin-bottom: 5px;
 
             color: #0f0f0f;
+
+            font-weight: 600;
+
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+
+            overflow: hidden;
         }
 
         .channel-name,
@@ -389,6 +416,50 @@
             line-height: 19px;
         }
 
+        .channel-name {
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+        }
+
+        /* ================= EMPTY STATE ================= */
+
+        .empty-videos {
+            grid-column: 1 / -1;
+
+            min-height: 300px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+            justify-content: center;
+
+            color: #606060;
+
+            text-align: center;
+        }
+
+        .empty-videos-icon {
+            font-size: 50px;
+
+            margin-bottom: 15px;
+        }
+
+        .empty-videos h2 {
+            font-size: 20px;
+
+            color: #0f0f0f;
+
+            margin-bottom: 8px;
+        }
+
+        .empty-videos p {
+            font-size: 14px;
+        }
 
         /* ================= MOBILE ================= */
 
@@ -421,8 +492,14 @@
             .header-right {
                 width: auto;
             }
+
+            .video-grid {
+                grid-template-columns:
+                    repeat(auto-fill, minmax(240px, 1fr));
+            }
         }
 
+        /* ================= SMALL MOBILE ================= */
 
         @media (max-width: 600px) {
 
@@ -432,6 +509,10 @@
 
             .logo span {
                 display: none;
+            }
+
+            .youtube-icon {
+                margin-right: 0;
             }
 
             .search-container {
@@ -460,9 +541,14 @@
 
             .video-grid {
                 grid-template-columns: 1fr;
+
+                gap: 25px;
+            }
+
+            .thumbnail {
+                border-radius: 8px;
             }
         }
-
     </style>
 
 </head>
@@ -475,7 +561,6 @@
 
     <header>
 
-
         <!-- Logo -->
 
         <a href="/" class="logo">
@@ -485,7 +570,6 @@
             <span>YouTube</span>
 
         </a>
-
 
 
         <!-- Search -->
@@ -502,7 +586,6 @@
             </button>
 
         </div>
-
 
 
         <!-- Header Right -->
@@ -526,7 +609,12 @@
             >
 
                 <div class="profile">
-                    <img src="{{ asset('storage/'. Auth::user()->profile) }}" alt="Profile">
+
+                    <img
+                        src="{{ asset('storage/' . Auth::user()->profile) }}"
+                        alt="Profile"
+                    >
+
                 </div>
 
             </a>
@@ -536,13 +624,12 @@
     </header>
 
 
-
     <!-- ================= MAIN ================= -->
 
     <div class="layout">
 
 
-        <!-- Sidebar -->
+        <!-- ================= SIDEBAR ================= -->
 
         <aside class="sidebar">
 
@@ -593,13 +680,12 @@
         </aside>
 
 
-
-        <!-- Content -->
+        <!-- ================= CONTENT ================= -->
 
         <main class="content">
 
 
-            <!-- Categories -->
+            <!-- ================= CATEGORIES ================= -->
 
             <div class="categories">
 
@@ -634,226 +720,73 @@
             </div>
 
 
-
-            <!-- Videos -->
+            <!-- ================= VIDEOS ================= -->
 
             <div class="video-grid">
 
+                @forelse($videos as $video)
 
-                <!-- Video 1 -->
+                    <div class="video-card">
 
-                <div class="video-card">
+                        <!-- Video -->
 
-                    <div class="thumbnail">
-                        ▶
-                    </div>
+                        <div class="thumbnail">
 
-                    <div class="video-info">
-
-                        <div class="channel-avatar">
-                            A
-                        </div>
-
-                        <div class="video-details">
-
-                            <h3>
-                                Learn Laravel From Zero
-                            </h3>
-
-                            <p class="channel-name">
-                                Programming Academy
-                            </p>
-
-                            <p class="video-meta">
-                                125K views • 2 days ago
-                            </p>
+                            <video preload="metadata" controls>
+                                <source
+                                    src="{{ asset('storage/' . $video->video_path) }}"
+                                    type="video/mp4"
+                                >
+                                Your browser does not support the video tag.
+                            </video>
 
                         </div>
 
-                    </div>
 
-                </div>
+                        <!-- Video Information -->
+
+                        <div class="video-info">
+
+                            <!-- Channel Avatar -->
+
+                            <div class="channel-avatar">
+                                <img 
+                                src="{{ asset('storage/' . $video->channel->channel_image) }}"
+                                alt="{{ $video->channel->name }}" >
+                            </div>
 
 
+                            <!-- Details -->
 
-                <!-- Video 2 -->
+                            <div class="video-details">
 
-                <div class="video-card">
+                                <h3>{{ $video->title }}</h3>
 
-                    <div class="thumbnail">
-                        ▶
-                    </div>
+                                <p class="channel-name">
+                                    {{ $video->channel->name ?? 'Unknown Channel' }}
+                                </p>
 
-                    <div class="video-info">
+                                <p class="video-meta">
+                                    {{ $video->created_at->diffForHumans() }}
+                                </p>
 
-                        <div class="channel-avatar">
-                            C
+                            </div>
                         </div>
+                    </div>
 
-                        <div class="video-details">
+                @empty
 
-                            <h3>
-                                Build Your First Website
-                            </h3>
+                    <!-- No Videos -->
 
-                            <p class="channel-name">
-                                Code School
-                            </p>
+                    <div class="empty-videos">
 
-                            <p class="video-meta">
-                                85K views • 5 days ago
-                            </p>
-
-                        </div>
+                        <div class="empty-videos-icon">📺</div>
+                        <h2>No videos yet</h2>
+                        <p>There are no videos available to watch.</p>
 
                     </div>
 
-                </div>
-
-
-
-                <!-- Video 3 -->
-
-                <div class="video-card">
-
-                    <div class="thumbnail">
-                        ▶
-                    </div>
-
-                    <div class="video-info">
-
-                        <div class="channel-avatar">
-                            T
-                        </div>
-
-                        <div class="video-details">
-
-                            <h3>
-                                PHP & Laravel Tutorial
-                            </h3>
-
-                            <p class="channel-name">
-                                Tech World
-                            </p>
-
-                            <p class="video-meta">
-                                240K views • 1 week ago
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-
-                <!-- Video 4 -->
-
-                <div class="video-card">
-
-                    <div class="thumbnail">
-                        ▶
-                    </div>
-
-                    <div class="video-info">
-
-                        <div class="channel-avatar">
-                            D
-                        </div>
-
-                        <div class="video-details">
-
-                            <h3>
-                                How Databases Work
-                            </h3>
-
-                            <p class="channel-name">
-                                Developer Hub
-                            </p>
-
-                            <p class="video-meta">
-                                67K views • 3 days ago
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-
-                <!-- Video 5 -->
-
-                <div class="video-card">
-
-                    <div class="thumbnail">
-                        ▶
-                    </div>
-
-                    <div class="video-info">
-
-                        <div class="channel-avatar">
-                            W
-                        </div>
-
-                        <div class="video-details">
-
-                            <h3>
-                                Create a Laravel Project
-                            </h3>
-
-                            <p class="channel-name">
-                                Web Developers
-                            </p>
-
-                            <p class="video-meta">
-                                95K views • 4 days ago
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-
-                <!-- Video 6 -->
-
-                <div class="video-card">
-
-                    <div class="thumbnail">
-                        ▶
-                    </div>
-
-                    <div class="video-info">
-
-                        <div class="channel-avatar">
-                            P
-                        </div>
-
-                        <div class="video-details">
-
-                            <h3>
-                                PHP Project For Beginners
-                            </h3>
-
-                            <p class="channel-name">
-                                Programming World
-                            </p>
-
-                            <p class="video-meta">
-                                310K views • 2 weeks ago
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
+                @endforelse
 
             </div>
 
