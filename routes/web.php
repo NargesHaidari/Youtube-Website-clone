@@ -33,6 +33,6 @@ Route::get('/myChannel', function(){
     return view('myChannel', compact('channel'));
 })->name('myChannel');
         
-Route::get('/youtube', [VideoController::class, 'index'])->name('youtube');
+Route::get('/youtube', [VideoController::class, 'index'])->name('youtube')->middleware('auth');
 
 Route::post('/myChannel', [VideoController::class, 'store'])->name('video.store');
