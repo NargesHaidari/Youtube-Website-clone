@@ -321,6 +321,45 @@
         }
 
 
+        /* ================= LOGOUT ================= */
+
+        .logout-area {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #e5e5e5;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .logout-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+
+            background: #FF0000;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 18px;
+
+            padding: 9px 16px;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            opacity: 0.5;
+        }
+
+        .logout-icon {
+            font-size: 14px;
+        }
+
+
         /* ================= MOBILE ================= */
 
         @media (max-width: 650px) {
@@ -375,6 +414,14 @@
             }
 
             .my-channel-btn {
+                width: 100%;
+            }
+
+            .logout-area {
+                justify-content: stretch;
+            }
+
+            .logout-btn {
                 width: 100%;
             }
         }
@@ -521,6 +568,18 @@
 
                 </div>
 
+            </div>
+
+            <!-- Logout -->
+            <div class="logout-area">
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+
+                    <button type="submit" class="logout-btn">
+                        <span class="logout-icon">↪</span>
+                        Logout
+                    </button>
+                </form>
             </div>
 
         </section>

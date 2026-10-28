@@ -13,6 +13,7 @@ class Video extends Model
         'title',
         'description',
         'video_path',
+        'thumbnail',
     ];
 
     public function channel()

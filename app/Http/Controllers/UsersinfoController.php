@@ -48,5 +48,11 @@ class UsersinfoController extends Controller
             'email' => 'The email or password is incorrect.'
         ]);
     }
+
+    public function logout(){
+        Auth::logout();
+
+        return redirect()->route('login');
+    }
 }
 

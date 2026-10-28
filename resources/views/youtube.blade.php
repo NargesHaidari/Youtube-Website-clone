@@ -338,6 +338,14 @@
         transition: border-radius 0.2s ease;
     }
 
+    .thumbnail img {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        object-fit: cover;
+        display: block;
+        border-radius: 10px;
+    }
+
     .video-card:hover .thumbnail {
         border-radius: 6px;
     }
@@ -699,26 +707,23 @@
         </div>
 
         <!-- ================= VIDEOS ================= -->
+        
         <div class="video-grid">
 
             @forelse($videos as $video)
 
                 <div class="video-card">
 
-                    <!-- Video -->
+                    <!-- Video Thumbnail -->
 
                     <div class="thumbnail">
-
-                        <video preload="metadata" controls>
-                            <source
-                                src="{{ asset('storage/' . $video->video_path) }}"
-                                type="video/mp4"
+                        <a href="">
+                            <img
+                                src="{{ asset('storage/' . $video->thumbnail) }}"
+                                alt="{{ $video->title }}"
                             >
-                            Your browser does not support the video tag.
-                        </video>
-
+                        </a>
                     </div>
-
 
                     <!-- Video Information -->
 
@@ -727,17 +732,21 @@
                         <!-- Channel Avatar -->
 
                         <div class="channel-avatar">
-                            <img 
-                            src="{{ asset('storage/' . $video->channel->channel_image) }}"
-                            alt="{{ $video->channel->name }}" >
+                            <img
+                                src="{{ asset('storage/' . $video->channel->channel_image) }}"
+                                alt="{{ $video->channel->name }}"
+                            >
                         </div>
-
 
                         <!-- Details -->
 
                         <div class="video-details">
 
-                            <h3>{{ $video->title }}</h3>
+                            <h3>
+                                <a href="{{ route('videos.show', $video->id) }}">
+                                    {{ $video->title }}
+                                </a>
+                            </h3>
 
                             <p class="channel-name">
                                 {{ $video->channel->name ?? 'Unknown Channel' }}
@@ -756,16 +765,15 @@
                 <!-- No Videos -->
 
                 <div class="empty-videos">
-
                     <div class="empty-videos-icon">📺</div>
                     <h2>No videos yet</h2>
                     <p>There are no videos available to watch.</p>
-
                 </div>
 
             @endforelse
 
         </div>
+
 
     </main>
 
