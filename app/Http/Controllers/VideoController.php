@@ -6,57 +6,59 @@ use Illuminate\Http\Request;
 use App\Models\Video;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use FFMpeg\FFMpeg as FFMpegProcessor;
+use FFMpeg\FFMpeg;
 use FFMpeg\Coordinate\TimeCode;
 
 class VideoController extends Controller
 {
     public function store(Request $request)
     {
-        // 1. اعتبارسنجی اطلاعات فرم
+        // 1. اعتبارسنجی فرم
         $request->validate([
-            'title' => 'required|string',
+            'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'video' => 'required|file|mimes:mp4,mov,avi,mkv,webm|max:307200',
         ]);
 
-        // 2. ذخیره ویدیو
+        // 2. بررسی کاربر و کانال
+        $user = auth()->user();
+
+        if (!$user) {
+            return redirect()->route('login');
+        }
+
+        $channel = $user->channel;
+
+        if (!$channel) {
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'video' => 'ابتدا باید یک کانال ایجاد کنید.',
+                ]);
+        }
+
+        // 3. ذخیره فایل ویدیو
         $videoPath = $request->file('video')
             ->store('videos', 'public');
 
-        // 3. ساخت نام منحصربه‌فرد برای thumbnail
-        $thumbnailPath = 'thumbnails/' . Str::uuid() . '.jpg';
+        if (!$videoPath) {
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'video' => 'ذخیره فایل ویدیو ناموفق بود.',
+                ]);
+        }
 
+        // 4. ثبت ویدیو در دیتابیس، بدون thumbnail
         try {
-            // 4. ایجاد پوشه thumbnails در صورت نیاز
-            Storage::disk('public')->makeDirectory('thumbnails');
-
-            // 5. گرفتن مسیر کامل فایل ویدیو
-            $fullVideoPath = Storage::disk('public')
-                ->path($videoPath);
-
-            // 6. باز کردن ویدیو با FFmpeg
-            $ffmpeg = FFMpegProcessor::create();
-
-            $videoFile = $ffmpeg->open($fullVideoPath);
-
-            // 7. استخراج یک فریم از ثانیه اول ویدیو
-            $frame = $videoFile->frame(
-                TimeCode::fromSeconds(1)
-            );
-
-            // 8. ذخیره تصویر thumbnail
-            $thumbnailFullPath = Storage::disk('public')
-                ->path($thumbnailPath);
-
-            $frame->save($thumbnailFullPath);
-
-            // آزاد کردن منابع ویدیو
-            $videoFile->close();
-
+            $video = Video::create([
+                'channel_id' => $channel->id,
+                'title' => $request->title,
+                'description' => $request->description,
+                'video_path' => $videoPath,
+                'thumbnail' => null,
+            ]);
         } catch (\Throwable $e) {
-            // اگر استخراج تصویر ناموفق بود،
-            // فایل ویدیوی ذخیره‌شده را حذف کن
             Storage::disk('public')->delete($videoPath);
 
             report($e);
@@ -64,42 +66,49 @@ class VideoController extends Controller
             return back()
                 ->withInput()
                 ->withErrors([
-                    'video' => 'استخراج تصویر بندانگشتی ناموفق بود. لطفاً ویدیوی دیگری امتحان کنید.',
+                    'video' => 'ثبت اطلاعات ویدیو ناموفق بود. فایل laravel.log را بررسی کنید.',
                 ]);
         }
 
+        // 5. ساخت thumbnail؛ خطا نباید ویدیو را حذف کند
         try {
-            // 9. ذخیره اطلاعات ویدیو و مسیر thumbnail در دیتابیس
-            Video::create([
-                'channel_id' => auth()->user()->channel->id,
-                'title' => $request->title,
-                'description' => $request->description,
-                'video_path' => $videoPath,
+            $disk = Storage::disk('public');
+
+            $disk->makeDirectory('thumbnails');
+
+            $ffmpeg = FFMpeg::create([
+                'ffmpeg.binaries' => 'C:/ffmpeg/bin/ffmpeg.exe',
+                'ffprobe.binaries' => 'C:/ffmpeg/bin/ffprobe.exe',
+                'timeout' => 3600,
+                'ffmpeg.threads' => 2,
+            ]);
+
+            $fullVideoPath = $disk->path($videoPath);
+
+            $thumbnailPath = 'thumbnails/' . Str::uuid() . '.jpg';
+            $thumbnailFullPath = $disk->path($thumbnailPath);
+
+            $openedVideo = $ffmpeg->open($fullVideoPath);
+
+            $openedVideo
+                ->frame(TimeCode::fromSeconds(1))
+                ->save($thumbnailFullPath);
+
+            $video->update([
                 'thumbnail' => $thumbnailPath,
             ]);
 
         } catch (\Throwable $e) {
-            // اگر ذخیره دیتابیس شکست خورد،
-            // فایل‌های ساخته‌شده را حذف کن
-            Storage::disk('public')->delete([
-                $videoPath,
-                $thumbnailPath,
-            ]);
-
             report($e);
-
-            return back()
-                ->withInput()
-                ->withErrors([
-                    'video' => 'ذخیره اطلاعات ویدیو ناموفق بود. لطفاً دوباره تلاش کنید.',
-                ]);
         }
 
-        // 10. بازگشت به صفحه اصلی
-        return redirect()->route('youtube');
+        return redirect()
+            ->route('youtube')
+            ->with('success', 'ویدیو با موفقیت آپلود شد.');
     }
 
-    public function index(){
+    public function index()
+    {
         $videos = Video::with('channel')
             ->latest()
             ->get();

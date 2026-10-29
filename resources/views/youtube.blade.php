@@ -743,7 +743,7 @@
                         <div class="video-details">
 
                             <h3>
-                                <a href="{{ route('videos.show', $video->id) }}">
+                                <a href="">
                                     {{ $video->title }}
                                 </a>
                             </h3>
