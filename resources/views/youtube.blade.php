@@ -346,10 +346,6 @@
         border-radius: 10px;
     }
 
-    .video-card:hover .thumbnail {
-        border-radius: 6px;
-    }
-
     .thumbnail video {
         width: 100%;
         height: 100%;
@@ -743,7 +739,7 @@
                         <div class="video-details">
 
                             <h3>
-                                <a href="">
+                                <a href="{{ route('show-video', $video->id) }}">
                                     {{ $video->title }}
                                 </a>
                             </h3>

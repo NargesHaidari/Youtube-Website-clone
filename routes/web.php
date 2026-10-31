@@ -33,8 +33,10 @@ Route::get('/myChannel', function(){
     return view('myChannel', compact('channel'));
 })->name('myChannel');
         
-Route::get('/youtube', [VideoController::class, 'index'])->name('youtube')->middleware('auth');
+Route::get('/youtube', [VideoController::class, 'home'])->name('youtube')->middleware('auth');
 
 Route::post('/myChannel', [VideoController::class, 'store'])->name('video.store');
 
 Route::post('/logout', [UsersinfoController::class , 'logout'])->name('logout');
+
+Route::get('/show-video/{id}', [VideoController::class, 'index'])->name('show-video');

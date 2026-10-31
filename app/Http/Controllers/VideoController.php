@@ -107,12 +107,25 @@ class VideoController extends Controller
             ->with('success', 'ویدیو با موفقیت آپلود شد.');
     }
 
-    public function index()
+    public function home()
     {
         $videos = Video::with('channel')
             ->latest()
             ->get();
 
         return view('youtube', compact('videos'));
+    }
+
+    public function index($id)
+    {
+        $video = Video::with('channel')->findOrFail($id);
+
+        $relatedVideos = Video::with('channel')
+            ->where('id', '!=', $video->id)
+            ->latest()
+            ->take(3)
+            ->get();
+
+        return view('showVideo', compact('video', 'relatedVideos'));
     }
 }
