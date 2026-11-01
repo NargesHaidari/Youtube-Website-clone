@@ -327,6 +327,15 @@
         background: #ccc;
     }
 
+    .like-group .action-btn.liked {
+        color: #065fd4;
+    }
+
+    .like-group .action-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
     /* =========================
        Video description
     ========================= */
@@ -638,8 +647,16 @@
 
 @section('content')
 
+@php
+    $likesCount = $video->likes()->count();
+
+    $isLiked = auth()->check()
+        ? $video->likes()->where('user_id', auth()->id())->exists()
+        : false;
+@endphp
+
 <header class="watch-header">
-    <a href="{{ url('/') }}" class="watch-logo">
+    <a href="{{ url('/youtube') }}" class="watch-logo">
         <div class="youtube-icon"></div>
         <span>YouTube</span>
     </a>
@@ -697,9 +714,21 @@
 
             <div class="action-buttons">
                 <div class="like-group">
-                    <button class="action-btn" type="button">
-                        <i class="fa-regular fa-thumbs-up"></i>
+                    <button
+                        id="like-button"
+                        class="action-btn {{ $isLiked ? 'liked' : '' }}"
+                        type="button"
+                        data-url="{{ route('video-likes.toggle', $video->id) }}"
+                        data-liked="{{ $isLiked ? 'true' : 'false' }}"
+                        @guest
+                            disabled
+                            title="Please log in to like this video."
+                        @endguest
+                        aria-pressed="{{ $isLiked ? 'true' : 'false' }}"
+                    >
+                        <i class="{{ $isLiked ? 'fa-solid' : 'fa-regular' }} fa-thumbs-up"></i>
                         <span>Like</span>
+                        <span id="likes-count">{{ $likesCount }}</span>
                     </button>
 
                     <span class="like-divider"></span>
@@ -785,5 +814,57 @@
 
     </aside>
 </main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const likeButton = document.getElementById('like-button');
+
+    if (!likeButton || likeButton.disabled) {
+        return;
+    }
+
+    likeButton.addEventListener('click', async function () {
+        if (likeButton.disabled) {
+            return;
+        }
+
+        const countElement = document.getElementById('likes-count');
+        const icon = likeButton.querySelector('i');
+
+        likeButton.disabled = true;
+
+        try {
+            const response = await fetch(likeButton.dataset.url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': @json(csrf_token()),
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Unable to update like.');
+            }
+
+            likeButton.dataset.liked = data.liked ? 'true' : 'false';
+            likeButton.setAttribute('aria-pressed', data.liked ? 'true' : 'false');
+            likeButton.classList.toggle('liked', data.liked);
+
+            icon.classList.toggle('fa-solid', data.liked);
+            icon.classList.toggle('fa-regular', !data.liked);
+
+            countElement.textContent = data.likes_count;
+        } catch (error) {
+            console.error('Like error:', error);
+            alert(error.message || 'Something went wrong. Please try again.');
+        } finally {
+            likeButton.disabled = false;
+        }
+    });
+});
+</script>
 
 @endsection

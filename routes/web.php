@@ -40,3 +40,8 @@ Route::post('/myChannel', [VideoController::class, 'store'])->name('video.store'
 Route::post('/logout', [UsersinfoController::class , 'logout'])->name('logout');
 
 Route::get('/show-video/{id}', [VideoController::class, 'index'])->name('show-video');
+
+use App\Http\Controllers\VideoLikeController;
+
+Route::middleware('auth')->post('/videos/{video}/like', [VideoLikeController::class, 'toggle']
+)->name('video-likes.toggle');
