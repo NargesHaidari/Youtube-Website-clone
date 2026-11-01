@@ -22,8 +22,8 @@ class Video extends Model
         return $this->belongsTo(Channel::class);
     }
 
-    public function likes(): HasMany
+    public function reactions(): HasMany
     {
-        return $this->hasMany(VideoLike::class);
+        return $this->hasMany(VideoReaction::class, 'video_id');
     }
 }

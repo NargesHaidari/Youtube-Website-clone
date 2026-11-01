@@ -1,4 +1,3 @@
-
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -9,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('video_likes', function (Blueprint $table) {
+        Schema::create('video_reactions', function (Blueprint $table) {
             $table->id();
 
             $table->foreignId('user_id')
@@ -20,6 +19,9 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete();
 
+            $table->enum('type', ['like', 'dislike'])
+                ->default('like');
+
             $table->unique(['user_id', 'video_id']);
 
             $table->timestamps();
@@ -28,6 +30,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('video_likes');
+        Schema::dropIfExists('video_reactions');
     }
 };

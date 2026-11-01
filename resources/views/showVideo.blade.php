@@ -327,7 +327,8 @@
         background: #ccc;
     }
 
-    .like-group .action-btn.liked {
+    .like-group .action-btn.liked,
+    .like-group .action-btn.disliked {
         color: #065fd4;
     }
 
@@ -648,11 +649,22 @@
 @section('content')
 
 @php
-    $likesCount = $video->likes()->count();
+    $likesCount = $video->reactions()
+        ->where('type', 'like')
+        ->count();
 
-    $isLiked = auth()->check()
-        ? $video->likes()->where('user_id', auth()->id())->exists()
-        : false;
+    $dislikesCount = $video->reactions()
+        ->where('type', 'dislike')
+        ->count();
+
+    $userReaction = auth()->check()
+        ? $video->reactions()
+            ->where('user_id', auth()->id())
+            ->value('type')
+        : null;
+
+    $isLiked = $userReaction === 'like';
+    $isDisliked = $userReaction === 'dislike';
 @endphp
 
 <header class="watch-header">
@@ -718,11 +730,11 @@
                         id="like-button"
                         class="action-btn {{ $isLiked ? 'liked' : '' }}"
                         type="button"
-                        data-url="{{ route('video-likes.toggle', $video->id) }}"
-                        data-liked="{{ $isLiked ? 'true' : 'false' }}"
+                        data-type="like"
+                        data-url="{{ route('video-reactions.toggle', $video->id) }}"
                         @guest
                             disabled
-                            title="Please log in to like this video."
+                            title="Please log in to react to this video."
                         @endguest
                         aria-pressed="{{ $isLiked ? 'true' : 'false' }}"
                     >
@@ -733,8 +745,20 @@
 
                     <span class="like-divider"></span>
 
-                    <button class="action-btn" type="button" aria-label="Dislike">
-                        <i class="fa-regular fa-thumbs-down"></i>
+                    <button
+                        id="dislike-button"
+                        class="action-btn {{ $isDisliked ? 'disliked' : '' }}"
+                        type="button"
+                        data-type="dislike"
+                        data-url="{{ route('video-reactions.toggle', $video->id) }}"
+                        @guest
+                            disabled
+                            title="Please log in to react to this video."
+                        @endguest
+                        aria-pressed="{{ $isDisliked ? 'true' : 'false' }}"
+                    >
+                        <i class="{{ $isDisliked ? 'fa-solid' : 'fa-regular' }} fa-thumbs-down"></i>
+                        <span id="dislikes-count">{{ $dislikesCount }}</span>
                     </button>
                 </div>
 
@@ -818,51 +842,75 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const likeButton = document.getElementById('like-button');
+    const dislikeButton = document.getElementById('dislike-button');
 
-    if (!likeButton || likeButton.disabled) {
+    if (!likeButton || !dislikeButton) {
         return;
     }
 
-    likeButton.addEventListener('click', async function () {
-        if (likeButton.disabled) {
+    const reactionButtons = [likeButton, dislikeButton];
+
+    async function toggleReaction(button) {
+        if (reactionButtons.some(btn => btn.disabled)) {
             return;
         }
 
-        const countElement = document.getElementById('likes-count');
-        const icon = likeButton.querySelector('i');
-
-        likeButton.disabled = true;
+        reactionButtons.forEach(btn => btn.disabled = true);
 
         try {
-            const response = await fetch(likeButton.dataset.url, {
+            const response = await fetch(button.dataset.url, {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': @json(csrf_token()),
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
-                }
+                },
+                body: JSON.stringify({
+                    type: button.dataset.type
+                })
             });
 
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.message || 'Unable to update like.');
+                throw new Error(data.message || 'Unable to update reaction.');
             }
 
-            likeButton.dataset.liked = data.liked ? 'true' : 'false';
-            likeButton.setAttribute('aria-pressed', data.liked ? 'true' : 'false');
-            likeButton.classList.toggle('liked', data.liked);
+            const isLiked = data.user_reaction === 'like';
+            const isDisliked = data.user_reaction === 'dislike';
 
-            icon.classList.toggle('fa-solid', data.liked);
-            icon.classList.toggle('fa-regular', !data.liked);
+            likeButton.classList.toggle('liked', isLiked);
+            dislikeButton.classList.toggle('disliked', isDisliked);
 
-            countElement.textContent = data.likes_count;
+            likeButton.setAttribute('aria-pressed', String(isLiked));
+            dislikeButton.setAttribute('aria-pressed', String(isDisliked));
+
+            const likeIcon = likeButton.querySelector('i');
+            const dislikeIcon = dislikeButton.querySelector('i');
+
+            likeIcon.classList.toggle('fa-solid', isLiked);
+            likeIcon.classList.toggle('fa-regular', !isLiked);
+
+            dislikeIcon.classList.toggle('fa-solid', isDisliked);
+            dislikeIcon.classList.toggle('fa-regular', !isDisliked);
+
+            document.getElementById('likes-count').textContent = data.likes_count;
+            document.getElementById('dislikes-count').textContent = data.dislikes_count;
+
         } catch (error) {
-            console.error('Like error:', error);
+            console.error('Reaction error:', error);
             alert(error.message || 'Something went wrong. Please try again.');
         } finally {
-            likeButton.disabled = false;
+            reactionButtons.forEach(btn => btn.disabled = false);
         }
+    }
+
+    likeButton.addEventListener('click', function () {
+        toggleReaction(likeButton);
+    });
+
+    dislikeButton.addEventListener('click', function () {
+        toggleReaction(dislikeButton);
     });
 });
 </script>

@@ -5,6 +5,7 @@ use App\Http\Controllers\UsersinfoController;
 use App\Http\Controllers\ChannelsController;
 use App\Http\Controllers\VideoController;
 use App\Models\Channel;
+use App\Http\Controllers\VideoReactionController;
 
 Route::get('/welcome', function(){return view('welcome');})->name('welcome');
 
@@ -41,7 +42,5 @@ Route::post('/logout', [UsersinfoController::class , 'logout'])->name('logout');
 
 Route::get('/show-video/{id}', [VideoController::class, 'index'])->name('show-video');
 
-use App\Http\Controllers\VideoLikeController;
-
-Route::middleware('auth')->post('/videos/{video}/like', [VideoLikeController::class, 'toggle']
-)->name('video-likes.toggle');
+Route::middleware('auth')->post('/videos/{video}/reaction', [VideoReactionController::class, 'toggle']
+)->name('video-reactions.toggle');

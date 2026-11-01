@@ -460,6 +460,7 @@
         font-size: 14px;
     }
 
+
     /* ================= MOBILE ================= */
 
     @media (max-width: 900px) {
@@ -713,7 +714,7 @@
                     <!-- Video Thumbnail -->
 
                     <div class="thumbnail">
-                        <a href="">
+                        <a href="{{ route('show-video', $video->id) }}">
                             <img
                                 src="{{ asset('storage/' . $video->thumbnail) }}"
                                 alt="{{ $video->title }}"
