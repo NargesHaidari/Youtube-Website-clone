@@ -42,33 +42,6 @@
             gap: 15px;
         }
 
-        /* Home */
-
-        .home-btn {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-
-            text-decoration: none;
-            color: #0f0f0f;
-
-            font-size: 13px;
-            font-weight: 500;
-
-            padding: 7px 10px;
-            border-radius: 7px;
-
-            transition: background 0.2s;
-        }
-
-        .home-btn:hover {
-            background: #f2f2f2;
-        }
-
-        .home-icon {
-            font-size: 17px;
-        }
-
         /* YouTube Logo */
 
         .logo {
@@ -78,6 +51,9 @@
 
             font-size: 18px;
             font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            color: black;
         }
 
         .youtube-icon {
@@ -98,8 +74,8 @@
         /* Header Profile */
 
         .header-profile {
-            width: 32px;
-            height: 32px;
+            width: 38px;
+            height: 38px;
 
             border-radius: 50%;
             overflow: hidden;
@@ -436,22 +412,15 @@
 
         <div class="header-left">
 
-            <!-- Back to Home -->
-
-            <a href="{{ route('youtube') }}" class="home-btn">
-                <span class="home-icon">←</span>
-                <span>Home</span>
-            </a>
-
             <!-- YouTube Logo -->
 
-            <div class="logo">
+            <a href="/youtube" class="logo">
                 <div class="youtube-icon">
                     ▶
                 </div>
 
                 YouTube
-            </div>
+            </a>
 
         </div>
 

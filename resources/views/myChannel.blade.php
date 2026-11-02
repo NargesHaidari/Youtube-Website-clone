@@ -37,28 +37,60 @@
             z-index: 10;
         }
 
-        .home-btn {
-            text-decoration: none;
-            color: #0f0f0f;
+        .header-right {
+            width: 220px;
 
-            font-size: 14px;
-            font-weight: 500;
+            display: flex;
 
-            padding: 7px 11px;
-            border-radius: 7px;
+            justify-content: flex-end;
+            align-items: center;
 
-            transition: 0.2s;
+            gap: 20px;
         }
 
-        .home-btn:hover {
-            background: #f2f2f2;
+        /* Profile */
+
+        .profile-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            text-decoration: none;
+        }
+
+        .profile {
+            width: 38px;
+            height: 38px;
+
+            border-radius: 50%;
+
+            overflow: hidden;
+
+            cursor: pointer;
+
+            transition: transform 0.2s ease;
+        }
+
+        .profile img {
+            width: 100%;
+            height: 100%;
+
+            display: block;
+
+            object-fit: cover;
+        }
+
+        .profile:hover {
+            transform: scale(1.08);
         }
 
         .logo {
             display: flex;
             align-items: center;
             gap: 6px;
-
+            text-decoration: none;
+            color: black;
+            cursor: pointer;
             font-size: 19px;
             font-weight: bold;
         }
@@ -353,12 +385,20 @@
 
     <header class="header">
         
-        <div class="logo">
-            <div class="youtube-icon">▶</div>
-            YouTube
+        <div class="header-left">
+            <a href="/youtube" class="logo">
+                <div class="youtube-icon">▶</div>
+                YouTube
+            </a>
         </div>
 
-        <a href="{{ route('youtube') }}" class="home-btn">← Home</a>
+        <div class="header-right">
+            <a href="{{ route('profile') }}" class="profile-link">
+                <div class="profile">
+                    <img src="{{ asset('storage/' . Auth::user()->profile) }}" alt="Profile">
+                </div>
+            </a>
+        </div>
 
     </header>
 

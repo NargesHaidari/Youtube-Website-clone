@@ -129,6 +129,15 @@
 
     /* ================= HEADER RIGHT ================= */
 
+    .header-btn {
+        border: none;
+        background: none;
+        
+        font-size: 21px;
+        
+        cursor: pointer;
+    }
+    
     .header-right {
         width: 220px;
 
@@ -138,15 +147,6 @@
         align-items: center;
 
         gap: 20px;
-    }
-
-    .header-btn {
-        border: none;
-        background: none;
-
-        font-size: 21px;
-
-        cursor: pointer;
     }
 
     /* Profile */
@@ -558,7 +558,7 @@
 
     <!-- Logo -->
 
-    <a href="/" class="logo">
+    <a href="/youtube" class="logo">
 
         <div class="youtube-icon"></div>
 
