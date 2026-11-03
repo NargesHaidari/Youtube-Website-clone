@@ -13,14 +13,12 @@ class VideoController extends Controller
 {
     public function store(Request $request)
     {
-        // 1. اعتبارسنجی فرم
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'video' => 'required|file|mimes:mp4,mov,avi,mkv,webm|max:307200',
         ]);
 
-        // 2. بررسی کاربر و کانال
         $user = auth()->user();
 
         if (!$user) {
@@ -33,11 +31,10 @@ class VideoController extends Controller
             return back()
                 ->withInput()
                 ->withErrors([
-                    'video' => 'ابتدا باید یک کانال ایجاد کنید.',
+                    'video' => 'You must create a channel first.',
                 ]);
         }
 
-        // 3. ذخیره فایل ویدیو
         $videoPath = $request->file('video')
             ->store('videos', 'public');
 
@@ -45,11 +42,10 @@ class VideoController extends Controller
             return back()
                 ->withInput()
                 ->withErrors([
-                    'video' => 'ذخیره فایل ویدیو ناموفق بود.',
+                    'video' => 'Failed to upload the video file.',
                 ]);
         }
 
-        // 4. ثبت ویدیو در دیتابیس، بدون thumbnail
         try {
             $video = Video::create([
                 'channel_id' => $channel->id,
@@ -66,11 +62,10 @@ class VideoController extends Controller
             return back()
                 ->withInput()
                 ->withErrors([
-                    'video' => 'ثبت اطلاعات ویدیو ناموفق بود. فایل laravel.log را بررسی کنید.',
+                    'video' => 'Failed to save video information. Please check the laravel.log file.',
                 ]);
         }
 
-        // 5. ساخت thumbnail؛ خطا نباید ویدیو را حذف کند
         try {
             $disk = Storage::disk('public');
 
@@ -104,7 +99,7 @@ class VideoController extends Controller
 
         return redirect()
             ->route('youtube')
-            ->with('success', 'ویدیو با موفقیت آپلود شد.');
+            ->with('success', 'Video uploaded successfully.');
     }
 
     public function home()
@@ -119,6 +114,9 @@ class VideoController extends Controller
     public function index($id)
     {
         $video = Video::with('channel')->findOrFail($id);
+
+        $video->increment('views');
+        $video->refresh();
 
         $relatedVideos = Video::with('channel')
             ->where('id', '!=', $video->id)

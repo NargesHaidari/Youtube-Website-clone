@@ -781,7 +781,9 @@
         <div class="video-description">
             <div class="description-meta">
                 <span>{{ $video->created_at->diffForHumans() }}</span>
-                <span>Video description</span>
+                <span class="video-views">
+                    {{ number_format($video->views) }} Views
+                </span>
             </div>
 
             <div class="description-text">{{ $video->description ?: 'No description available for this video.' }}</div>

@@ -137,7 +137,7 @@
         
         cursor: pointer;
     }
-    
+
     .header-right {
         width: 220px;
 

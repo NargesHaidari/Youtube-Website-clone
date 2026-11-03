@@ -321,6 +321,27 @@
             background: #cc0000;
         }
 
+        .edit-channel {
+            background-color: #f2f2f2;
+            color: #0f0f0f;
+            border: none;
+            border-radius: 10px;
+            padding: 9px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            text-decoration: none;
+        }
+
+        .edit-channel:hover {
+            background-color: #e5e5e5;
+        }
+
+        .edit-channel:active {
+            background-color: #d6d6d6;
+        }
+
 
         /* ================= RESPONSIVE ================= */
 
@@ -496,6 +517,8 @@
                     </strong>
 
                 </div>
+
+                <a href="/example" class="edit-channel">Edit Channel</a>
 
             </section>
 

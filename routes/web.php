@@ -44,3 +44,5 @@ Route::get('/show-video/{id}', [VideoController::class, 'index'])->name('show-vi
 
 Route::middleware('auth')->post('/videos/{video}/reaction', [VideoReactionController::class, 'toggle']
 )->name('video-reactions.toggle');
+
+Route::get('/example', function(){return view('example');});
