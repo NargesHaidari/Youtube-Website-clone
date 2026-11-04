@@ -29,14 +29,14 @@ Route::get('/createChannel', function(){return view('createChannel');})->name('c
 
 Route::post('/createChannel', [ChannelsController::class, 'store'])->name('channel.store');
 
-Route::get('/myChannel', function(){
+Route::get('/channel', function(){
     $channel = Channel::where('user_id', Auth::id())->first();
     return view('myChannel', compact('channel'));
 })->name('myChannel');
         
 Route::get('/youtube', [VideoController::class, 'home'])->name('youtube')->middleware('auth');
 
-Route::post('/myChannel', [VideoController::class, 'store'])->name('video.store');
+Route::post('/channel', [VideoController::class, 'store'])->name('video.store');
 
 Route::post('/logout', [UsersinfoController::class , 'logout'])->name('logout');
 
@@ -45,4 +45,6 @@ Route::get('/show-video/{id}', [VideoController::class, 'index'])->name('show-vi
 Route::middleware('auth')->post('/videos/{video}/reaction', [VideoReactionController::class, 'toggle']
 )->name('video-reactions.toggle');
 
-Route::get('/example', function(){return view('example');});
+Route::get('/channel/edit', [ChannelsController::class, 'edit'])->name('channel.edit');
+
+Route::put('/channel/update', [ChannelsController::class, 'update'])->name('channel.update');

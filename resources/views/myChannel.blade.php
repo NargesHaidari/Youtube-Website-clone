@@ -518,7 +518,7 @@
 
                 </div>
 
-                <a href="/example" class="edit-channel">Edit Channel</a>
+                <a href="{{ route('channel.edit') }}" class="edit-channel">Edit Channel</a>
 
             </section>
 
